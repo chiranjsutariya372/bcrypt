@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Welcome</h1>
+    <form id="form">
+        <input type="text" id="title">
+        <input type="url" id="img">
+        <input type="number" id="price">
+        <input type="submit">
+    </form>
+    <div id="ui"></div>
+</body>
+
+<script>
+ fetch("http://localhost:8080/find")
+      .then((res) => res.json())
+      .then((res) => show(res));
+
+    let show=(data)=>{
+      data.map((ele)=>{
+        let title=document.createElement("h3")
+        title.innerHTML=ele.title
+        let img=document.createElement("img")
+        img.src=ele.img
+        let price=document.createElement("h4")
+        price.innerHTML=ele.price
+
+        let div=document.createElement("div")
+        div.append(img,title,price)
+
+        document.getElementById("ui").append(div)
+      })
+    }
+
+    document.getElementById("form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      let product = {
+        title: document.getElementById("title").value,
+        img: document.getElementById("img").value,
+        price: document.getElementById("price").value
+      };
+      return addProduct(product);
+    });
+
+    const addProduct = (data) => {
+      fetch("/add", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((res) => console.log(res));
+    };
+</script>
+
+</html>
